@@ -1,48 +1,166 @@
 const { NotImplementedError } = require('../extensions/index.js');
 
-// const { Node } = require('../extensions/list-tree.js');
+const { Node } = require('../extensions/list-tree.js');
 
 /**
 * Implement simple binary search tree according to task description
 * using Node from extensions
 */
 class BinarySearchTree {
-
-  root() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(){
   }
 
-  add(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
+  #root = null;
 
-  has(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
+  root(){
+    return this.#root;
+  };
 
-  find(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
+  add(data){
+    this.#root = append(this.#root, data);
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
+    function append(node, data){
+      if(!node){
+        return new Node(data);
+      };
 
-  min() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
+      if(node.data === data){
+        return node;
+      };
 
-  max() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
-}
+      if(node.data > data){
+        node.left = append(node.left, data);
+      }
+      else{
+        node.right = append(node.right, data);
+      };
+
+      return node;
+    };
+  };
+
+  has(data){
+
+    return quest(this.#root, data);
+
+    function quest(node, value){
+      if(!node){
+        return false;
+      };
+
+      if(node.data === value){
+        return true;
+      };
+
+      if(value < node.data){
+        return quest(node.left, data);
+      }else{
+        return quest(node.right, data);
+      };
+    };
+  };
+    
+
+  find(data){
+
+    return questNode(this.#root, data);
+
+    function questNode(node, value){
+      if(!node){
+        return null;
+      };
+
+      if(node.data === value){
+        return node;
+      };
+
+      if(value < node.data){
+        return questNode(node.left, data);
+      }else{
+        return questNode(node.right, data);
+      };
+    };
+  };
+
+  remove(data){
+
+    this.#root = killNode(this.#root, data);
+
+    function killNode(node, value){
+
+      if(!node){
+        return null;
+      };
+
+      if(value < node.data){
+        node.left = killNode(node.left, data);
+        return node;
+      }
+      else if(value > node.data){
+        node.right = killNode(node.right, data);
+        return node;
+      }
+      else{
+        if(!node.left && !node.right){
+          return null;
+        };
+
+        if(!node.left){
+          node = node.right;
+          return node;
+        };
+
+        if(!node.right){
+          node = node.left;
+          return node;
+        };
+
+        let minRight = node.right;
+
+        while(minRight.left){
+          minRight = minRight.left;
+        };
+
+        node.data = minRight.data;
+
+        node.right = killNode(node.right, minRight.data);
+
+        return node;
+
+      };
+    };
+  };
+
+  min(){
+
+   if(!this.#root){
+    return null;
+   };
+
+   let elem = this.#root;
+
+    while(elem.left){
+      elem = elem.left;
+    }
+    
+    return elem.data;
+  };
+
+  max(){
+    
+   if(!this.#root){
+    return null;
+   };
+
+   let elem = this.#root;
+
+    while(elem.right){
+      elem = elem.right;
+    };
+
+    return elem.data;
+  };
+};
 
 module.exports = {
   BinarySearchTree
